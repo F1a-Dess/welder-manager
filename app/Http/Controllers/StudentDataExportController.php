@@ -31,7 +31,7 @@ class StudentDataExportController extends Controller
         Log::info('Formatted End Date: ' . $formattedEndDate);
     
         // Trim any extra spaces and correctly concatenate the filename
-        $fileName = "{$validated['endDate']} WEEKLY REPORT ASSESSMENT.xlsx";
+        $fileName = "{$formattedEndDate} WEEKLY REPORT ASSESSMENT.xlsx";
         $encodedFileName =rawurldecode($fileName);
 
         Log::info('Generated filename: ' . $encodedFileName);
