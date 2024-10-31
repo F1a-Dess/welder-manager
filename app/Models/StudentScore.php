@@ -20,7 +20,8 @@ class StudentScore extends Model
         "language",
         "attitude",
         "total_score",
-        "grade"
+        "grade",
+        "type_weld",
 
     ];
 

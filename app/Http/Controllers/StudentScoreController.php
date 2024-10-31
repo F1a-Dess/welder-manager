@@ -59,7 +59,8 @@ class StudentScoreController extends Controller
             'welding_skill' => 'required|integer',
             "language" => 'required|integer',
             "attitude" => 'required|integer',
-            "grade" => 'required|string|max:1'
+            "grade" => 'required|string|max:1',
+            "type_weld" => 'required|string|in:3G,4G',
         ]);
 
         // calculate total score
@@ -75,6 +76,7 @@ class StudentScoreController extends Controller
             'attitude'=> $request -> attitude,
             'total_score'=>$total_score,
             'grade' => $request -> grade,
+            'type_weld' => $request -> type_weld,
         ]);
 
         // return response()->json($score, 201);
@@ -91,7 +93,8 @@ class StudentScoreController extends Controller
             'welding_skill' => 'required|integer',
             'language' => 'required|integer',
             'attitude' => 'required|integer',
-            'grade' => 'required|string|max:1'
+            'grade' => 'required|string|max:1',
+            "type_weld" => 'required|string|in:3G,4G',
         ]);
 
         // Calculate total score
@@ -105,6 +108,7 @@ class StudentScoreController extends Controller
             'language' => $request ->language,
             'attitude' => $request -> attitude,
             'grade' => $request -> grade,
+            'type_weld' => $request -> type_weld,
             'total_score' => $total_score,
         ]);
 

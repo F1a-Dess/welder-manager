@@ -32,14 +32,12 @@ class StudentsExport implements FromCollection, WithHeadings, WithTitle, WithSty
 
         // big title
         $exportData[] = ['']; // Empty row after the title
-        $exportData[] = ['No', 'Day', 'Date', 'Welding Skill', 'Language', 'Attitude', 'Total', 'Grade'];
         $currentRow = 4; // Start track from 2rd row
-
+        
         foreach ($this->students as $student) {
-            $exportData[] = ["FULL NAME: {$student->no_test} - {$student->name}"];
+            $exportData[] = ["FULL NAME: {$student->no_test} - {$student->name}", ""];
+            $exportData[] = ['No', 'Day', 'Date', 'Welding Skill', 'Language', 'Attitude', 'Total', 'Grade'];
             $currentRow++;
-
-            $sortedScores = $student->scores->sortBy('date');
 
             foreach ($student->scores as $index => $score) {
                 $rowNumber = $currentRow; // track current row
@@ -73,6 +71,14 @@ class StudentsExport implements FromCollection, WithHeadings, WithTitle, WithSty
     public function styles(\PhpOffice\PhpSpreadsheet\Worksheet\Worksheet $sheet) {
         // Merge the title row (A1:H1)
         $sheet->mergeCells('A1:H1');
+
+        // Start from row 2
+        $row = 2;
+
+        foreach($this->students as $student) {
+            $sheet->mergeCells("A{$row}:B{$row}");
+            $row += count($student->scores) + 3;
+        }
 
         // Set the title row to bold, centered, and larger font size
         $sheet->getStyle('A1')->applyFromArray([

@@ -25,6 +25,7 @@ class StudentScoreResource extends JsonResource
             "attitude"=> $this->attitude,
             "total_score"=> $this->total_score,
             "grade"=> $this->grade,
+            "type_weld"=> $this->type_weld,
         ];
     }
 }

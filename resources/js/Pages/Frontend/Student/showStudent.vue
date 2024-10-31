@@ -113,6 +113,15 @@
                                             {{ sortOrder === 'asc' ? '↑' : '↓' }}
                                         </span>
                                     </th>
+                                    
+                                    <th 
+                                        @click="toggleSort('type_weld')" 
+                                        class="cursor-pointer">
+                                    Type Welding
+                                        <span v-if="sortColumn === 'type_weld'">
+                                            {{ sortOrder === 'asc' ? '↑' : '↓' }}
+                                        </span>
+                                    </th>
 
                                     <th>
                                     Option
@@ -129,6 +138,7 @@
                                     <td class="mb-3 text-center">{{ score.attitude }}</td>
                                     <td class="mb-3 text-center">{{ score.total_score }}</td>
                                     <td class="mb-3 text-center">{{ score.grade }}</td>
+                                    <td class="mb-3 text-center">{{ score.type_weld }}</td>
                                     <td>
                                         <Link 
                                             :href="route('student-scores.edit', { student : student.id, student_score : score.id})" 
