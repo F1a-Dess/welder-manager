@@ -12,17 +12,21 @@ use Maatwebsite\Excel\Concerns\WithStyles;
 class StudentsExport implements FromCollection, WithHeadings, WithTitle, WithStyles
 {
     protected $students;
+    protected $endDate;
 
     // Constructor to pass the data from the controller
-    public function __construct($students) {
+    public function __construct($students, $endDate) {
         
         $this->students = $students;
+        $this->endDate = $endDate;
     }
 
     // Define the headings for the spreadsheet
     public function headings(): array {
+
+        $formattedDate = Carbon::parse($this->endDate)->format('Y.m.d');
         return [
-            ['WEEKLY REPORT ASSESSMENT ' . now()->format('Y.m.d')]
+            ['WEEKLY REPORT ASSESSMENT ' . $formattedDate]
         ];
     }
 
@@ -36,7 +40,7 @@ class StudentsExport implements FromCollection, WithHeadings, WithTitle, WithSty
         
         foreach ($this->students as $student) {
             $exportData[] = ["FULL NAME: {$student->no_test} - {$student->name}", ""];
-            $exportData[] = ['No', 'Day', 'Date', 'Welding Skill', 'Language', 'Attitude', 'Total', 'Grade'];
+            $exportData[] = ['No', 'Day', 'Date', 'Welding Skill', 'Language', 'Attitude', 'Total', 'Grade', 'Type Welding'];
             $currentRow++;
 
             foreach ($student->scores as $index => $score) {
@@ -52,12 +56,14 @@ class StudentsExport implements FromCollection, WithHeadings, WithTitle, WithSty
                     // Excel formula to sum welding skill, language, and attitude
                     "=SUM(D{$rowNumber}:F{$rowNumber})",
                     $score->grade,
+                    $score->type_weld,
                 ];
 
                 $currentRow++;
             }
 
             $exportData[] = ['']; // Empty row between students
+            $currentRow++;
             $currentRow++;
         }
 

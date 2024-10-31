@@ -31,13 +31,13 @@ class StudentDataExportController extends Controller
         Log::info('Formatted End Date: ' . $formattedEndDate);
     
         // Trim any extra spaces and correctly concatenate the filename
-        $fileName = "{$formattedEndDate} WEEKLY REPORT ASSESSMENT.xlsx";
+        $fileName = "WEEKLY REPORT ASSESSMENT{$formattedEndDate}.xlsx";
         $encodedFileName =rawurldecode($fileName);
 
         Log::info('Generated filename: ' . $encodedFileName);
 
         // Use the custom export class and download the file
-        return Excel::download( new StudentsExport($students), $encodedFileName);
+        return Excel::download( new StudentsExport($students, $validated['endDate']), $encodedFileName);
         
         // return Excel::download(
         //     new StudentsExport($students),
