@@ -18,20 +18,39 @@
 
             <!-- {{ students }} -->
 
-            <table class="w-full bg-white border border-gray-200 shadow">
+            <table v-if="studentData.length" class="w-full bg-white border border-gray-200 shadow">
                 <thead>
                     <tr>
                         <th class="py-2 px-4 text-left border">Option</th>
                         <!-- <th class="py-2 px-4 text-left border">Id</th> -->
-                        <th class="py-2 px-4 text-left border">Nama</th>
-                        <th class="py-2 px-4 text-left border">Gelombang</th>
-                        <th class="py-2 px-4 text-left border">No Test</th>
+                        <th class="py-2 px-4 text-left border cursor-pointer" @click="changeSort('name')">
+                            Nama
+                            <span v-if="sortField === 'name'">
+                                {{ sortOrder === 'asc' ? '↑' : '↓' }}
+                            </span>
+                        </th>
+                        <th class="py-2 px-4 text-left border cursor-pointer" @click="changeSort('wave')">
+                            Gelombang
+                            <span v-if="sortField === 'wave'">
+                                {{ sortOrder === 'asc' ? '↑' : '↓' }}
+                            </span>
+                        </th>
+                        <th class="py-2 px-4 text-left border cursor-pointer" @click="changeSort('no_test')">
+                            No Test
+                            <span v-if="sortField === 'no_test'">
+                                {{ sortOrder === 'asc' ? '↑' : '↓' }}
+                            </span>
+                        </th>
                         <th class="py-4 px-4 text-left border">Action</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr 
+                    <!-- <tr 
                         v-for="(item, index) in students.data"
+                        :key="index"
+                    > -->
+                    <tr 
+                        v-for="(item, index) in studentData"
                         :key="index"
                     >
                         <td class="py-2 px-4 border">
@@ -130,9 +149,9 @@
 import FrontendLayout from '@/Layouts/FrontendLayout.vue';
 import { Head, useForm, Link } from '@inertiajs/vue3';
 import Pagination from '@/Components/Pagination.vue';
-import { computed, defineProps, ref } from 'vue';
+import { computed, defineProps, ref, watch } from 'vue';
 
-defineProps ({
+const props = defineProps ({
     students: [Object, Array],
 });
 
@@ -153,6 +172,11 @@ const showModal = ref(false);
 const startDate = ref('');
 const endDate = ref('');
 
+// sorting stuff
+
+const sortField = ref('');
+const sortOrder = ref('asc');
+
 const today = computed(() => new Date().toISOString().split('T')[0]);
 
 const minDate = computed(() => {
@@ -160,6 +184,30 @@ const minDate = computed(() => {
     date.setFullYear(date.getFullYear() - 1);
     return date.toISOString().split('T')[0];
 });
+
+const studentData = computed(() => {
+    const data = Array.isArray(props.students) ? props.students : props.students.data || [];
+
+    return [...data].sort((a, b) => {
+        if (!sortField.value) return 0;
+        const fieldA = a[sortField.value];
+        const fieldB = b[sortField.value];
+        
+        if (fieldA < fieldB) return sortOrder.value === 'asc' ? -1 : 1;
+        if (fieldA > fieldB) return sortOrder.value === 'asc' ? 1 : -1;
+        return 0;
+    });
+});
+
+const changeSort = (field) => {
+    if(sortField.value === field){
+        sortOrder.value = sortOrder.value === 'asc' ? 'desc' : 'asc';
+    } else {
+        sortField.value = field;
+        sortOrder.value = 'asc';
+    }
+    
+};
 
 
 const openDateRangeModal = () => {
