@@ -20,12 +20,18 @@ class StudentScoreResource extends JsonResource
             "student_id"=> $this->student_id,
             "date"=> $this->date,
 
-            "welding_skill"=> $this->welding_skill,
             "language"=> $this->language,
             "attitude"=> $this->attitude,
             "total_score"=> $this->total_score,
             "grade"=> $this->grade,
             "type_weld"=> $this->type_weld,
+
+            "welding_skill"=> $this->welding_skill,
+            "UC"=> $this->UC,
+            "OV"=> $this->OV,
+            "PO"=> $this->PO,
+            "UFVi"=> $this->UFVi,
+            "root_visual"=> $this->root_visual,
         ];
     }
 }

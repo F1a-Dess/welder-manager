@@ -16,13 +16,20 @@ class StudentScore extends Model
         "student_id",
         "date",
         
-        "welding_skill",
+        // weekly
         "language",
         "attitude",
         "total_score",
         "grade",
         "type_weld",
-
+        
+        // daily
+        "welding_skill", // total score of the scores below
+        "UC",
+        "OV",
+        "PO",
+        "UFVi",
+        "root_visual",
     ];
 
     public function student() {

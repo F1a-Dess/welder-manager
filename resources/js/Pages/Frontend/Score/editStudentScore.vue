@@ -58,6 +58,16 @@
                         <div v-if="form.errors.attitude" class="text-red-500">{{ form.errors.grade }}</div>
                     </div>
 
+                    <div class="mb-3">
+                        <label >Type Welding</label>
+                        <select v-model="form.type_weld" class="py-1 w full">
+                            <option value="" disabled>Select Welding Type</option>
+                            <option value="3G">3G</option>
+                            <option value="4G">4G</option>
+                        </select>
+                        <div v-if="form.errors.type_weld" class="text-red-500">{{ form.errors.type_weld }}</div>
+                    </div>
+
                     <!-- Hidden field for student_id -->
                     <input type="hidden" v-model="form.student_id">
 
@@ -113,6 +123,7 @@ const form = useForm({
     attitude: props.score.attitude,
     total_score: props.score.total_score, // should be automaticly shown the result
     grade: props.score.grade,
+    type_weld: props.score.grade, 
 });
 
 // calculate total score automatically

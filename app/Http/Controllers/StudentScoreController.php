@@ -56,27 +56,41 @@ class StudentScoreController extends Controller
             
             'student_id' => 'required|exists:students,id',
             'date'=> 'required|date',
-            'welding_skill' => 'required|integer',
             "language" => 'required|integer',
             "attitude" => 'required|integer',
             "grade" => 'required|string|max:1',
             "type_weld" => 'required|string|in:3G,4G',
+            
+            'welding_skill' => 'required|integer',
+            "UC" => 'required|integer',
+            "OV" => 'required|integer',
+            "PO" => 'required|integer',
+            "UFVi" => 'required|integer',
+            "root_visual" => 'required|integer',
         ]);
 
-        // calculate total score
-        $total_score = $validatedData['welding_skill'] + $validatedData['language'] + $validatedData['attitude'];
+        // calculate total score & welding skill
+        // $total_score = $validatedData['welding_skill'] + $validatedData['language'] + $validatedData['attitude'];
+        $welding_skill = $validatedData['UC'] + $validatedData['OV'] + $validatedData['PO'] + $validatedData['UFVi'] + $validatedData['root_visual'];
+        $total_score = $welding_skill + $validatedData['language'] + $validatedData['attitude'];
 
         // save new score
         $student = Student::findOrFail($validatedData['student_id']);
         $student->scores()->create([
             'student_id'=> $request->student_id,
             'date' => $request -> date,
-            'welding_skill' => $request -> welding_skill,
             'language'=> $request -> language,
             'attitude'=> $request -> attitude,
             'total_score'=>$total_score,
             'grade' => $request -> grade,
             'type_weld' => $request -> type_weld,
+
+            'welding_skill'=>$welding_skill,
+            'UC'=> $request-> UC,
+            'OV'=> $request-> OV,
+            'PO'=> $request-> PO,
+            'UFVi'=> $request-> UFVi,
+            'root_visual'=> $request-> root_visual,
         ]);
 
         // return response()->json($score, 201);
@@ -90,26 +104,40 @@ class StudentScoreController extends Controller
         $validatedData = $request->validate([
             'student_id' => 'required|exists:students,id',
             'date' => 'required|date',
-            'welding_skill' => 'required|integer',
             'language' => 'required|integer',
             'attitude' => 'required|integer',
             'grade' => 'required|string|max:1',
             "type_weld" => 'required|string|in:3G,4G',
+
+            'welding_skill' => 'required|integer',
+            "UC" => 'required|integer',
+            "OV" => 'required|integer',
+            "PO" => 'required|integer',
+            "UFVi" => 'required|integer',
+            "root_visual" => 'required|integer',
         ]);
 
         // Calculate total score
-        $total_score = $validatedData['welding_skill'] + $validatedData['language'] + $validatedData['attitude'];
+        $welding_skill = $validatedData['UC'] + $validatedData['OV'] + $validatedData['PO'] + $validatedData['UFVi'] + $validatedData['root_visual'];
+        $total_score = $welding_skill + $validatedData['language'] + $validatedData['attitude'];
+
 
         // Update the score
         $student_score->update([
             'student_id'=> $request->student_id,
             'date' => $request -> date,
-            'welding_skill' => $request -> welding_skill,
             'language' => $request ->language,
             'attitude' => $request -> attitude,
             'grade' => $request -> grade,
             'type_weld' => $request -> type_weld,
             'total_score' => $total_score,
+
+            'welding_skill' => $welding_skill,
+            'UC'=> $request-> UC,
+            'OV'=> $request-> OV,
+            'PO'=> $request-> PO,
+            'UFVi'=> $request-> UFVi,
+            'root_visual'=> $request-> root_visual,
         ]);
 
         return redirect()->route('student-scores.index', $student_score->student_id)->with('message', 'Score updated successfully!');

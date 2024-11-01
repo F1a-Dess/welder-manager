@@ -23,12 +23,18 @@ class StudentScoreController extends Controller
         $validator = Validator::make($request->all(), [
             'student_id' => 'required|exists:students,id',
             'date' => 'required|date',
-            'welding_skill' => 'required|integer',
             'language' => 'required|integer',
             'attitude' => 'required|integer',
             'total_score' => 'required|integer',
             'grade' => 'required|string|max:1',
             "type_weld" => 'required|string|in:3G,4G',
+
+            'welding_skill' => 'required|integer',
+            "UC" => 'required|integer',
+            "OV" => 'required|integer',
+            "PO" => 'required|integer',
+            "UFVi" => 'required|integer',
+            "root_visual" => 'required|integer',
         ]);
 
         if($validator->fails()) {
@@ -38,18 +44,25 @@ class StudentScoreController extends Controller
             ], 422);
         }
 
-        $totalScore = $request->welding_skill + $request->language + $request->attitude;
+        $welding_skill = $request->UC + $request->OV + $request->PO + $request->UFVi + $request->root_visual;
+        $totalScore = $welding_skill + $request->language + $request->attitude;
 
         $score = $student->scores()->create([
             'student_id' => $request->student_id,
             'date' => $request->date,
-            'welding_skill' => $request->welding_skill,
             'language' => $request->language,
             'attitude' => $request->attitude,
             'total_score' => $totalScore,
             'grade' => $request->grade,
             'type_weld' => $request->type_weld,
             
+            'welding_skill' => $welding_skill,
+            'UC' => $request->UC,
+            'OV' => $request->OV,
+            'PO' => $request->PO,
+            'UFVi' => $request->UFVi,
+            'root_visual' => $request->root_visual,
+
         ]);
 
 
@@ -74,25 +87,38 @@ class StudentScoreController extends Controller
         
         $validatedData = $request->validate([
             'date' => 'required|date',
-            'welding_skill' => 'required|numeric',
             'language' => 'required|numeric',
             'attitude' => 'required|numeric',
             'grade' => 'required|string|max:1',
             "type_weld" => 'required|string|in:3G,4G',
+
+            'welding_skill' => 'required|numeric',
+            "UC" => 'required|numeric',
+            "OV" => 'required|numeric',
+            "PO" => 'required|numeric',
+            "UFVi" => 'required|numeric',
+            "root_visual" => 'required|numeric',
         ]);
 
         // Calculate total score
-        $total_score = $validatedData['welding_skill'] + $validatedData['language'] + $validatedData['attitude'];
+        $welding_skill = $validatedData['UC'] + $validatedData['OV'] + $validatedData['PO'] + $validatedData['UFVi'] + $validatedData['visual_root'];
+        $total_score = $welding_skill + $validatedData['language'] + $validatedData['attitude'];
 
         // Update the score
         $studentScore->update([
             'date' => $request -> date,
-            'welding_skill' => $request -> welding_skill,
             'language' => $request ->language,
             'attitude' => $request -> attributes,
             'grade' => $request -> grade,
             'type_weld' => $request -> type_weld,
             'total_score' => $total_score,
+
+            'welding_skill' => $welding_skill,
+            'UC' => $request -> UC,
+            'OV' => $request -> OV,
+            'PO' => $request -> PO,
+            'UFVi' => $request -> UFVi,
+            'root_visual' => $request -> root_visual,
         ]);
 
         return redirect()->route('student-scores.index', $studentScore->student_id)->with('message', 'Score updated successfully!');

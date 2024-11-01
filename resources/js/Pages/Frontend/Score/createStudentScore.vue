@@ -28,16 +28,33 @@
                         <div v-if="errors.student_id" class="text-red-500">{{ errors.student_id }}</div>
                     </div> -->
 
-                    <div class="mb-3">
+                    <div class="mb-10">
                         <label >Input Date</label>
                         <input type="date" v-model="form.date" class="py-1 w-full">
                         <div v-if="form.errors.date" class="text-red-500">{{ form.errors.date }}</div>
                     </div>
 
-                    <div class="mb-3">
+                    <!-- R1 Weldin Skill Score -->
+                    <!-- <div class="mb-3">
                         <label >Welding Skill Score</label>
                         <input type="number" v-model="form.welding_skill" class="py-1 w-full">
                         <div v-if="form.errors.welding_skill" class="text-red-500">{{ form.errors.welding_skill }}</div>
+                    </div> -->
+
+                    <!-- R2 Welding Skill Score, adding daily score and calculation -->
+                    <div class="mb-3">
+                        <div class="mb-1">
+                            <label>Welding Score : U/C || OV || PO || U/F/Vi || Root Visual</label>
+                        </div>
+                        <input type="number" v-model="form.UC" class="py-1 m-2 w-20">
+                        <input type="number" v-model="form.OV" class="py-1 m-2 w-20">
+                        <input type="number" v-model="form.PO" class="py-1 m-2 w-20">
+                        <input type="number" v-model="form.UFVi" class="py-1 m-2 w-20">
+                        <input type="number" v-model="form.root_visual" class="py-1 m-2 mb-3 w-20">
+
+                        <label >Total Welding Skill Score</label>
+                        <input type="hidden" v-model="form.welding_skill">
+                        <div>{{ weldingScore }}</div>
                     </div>
 
                     <div class="mb-3">
@@ -72,11 +89,13 @@
 
                     <div class="mb-3">
                         <label >Type Welding</label>
-                        <select v-model="form.type_weld" class="py-1 w full">
-                            <option value="" disabled>Select Welding Type</option>
-                            <option value="3G">3G</option>
-                            <option value="4G">4G</option>
-                        </select>
+                        <div>
+                            <select v-model="form.type_weld" class="py-1 w full">
+                                <option value="" disabled>Select Welding Type</option>
+                                <option value="3G">3G</option>
+                                <option value="4G">4G</option>
+                            </select>
+                        </div>
                         <div v-if="form.errors.type_weld" class="text-red-500">{{ form.errors.type_weld }}</div>
                     </div>
 
@@ -127,21 +146,39 @@ const form = useForm({
     student_id: props.student.id, // Automatically set to the current student's ID
     date: '',
 
-    welding_skill: 0,
     language: 0,
     attitude: 0,
     total_score: 0, // should be automaticly shown the result
     grade: '',
-    type_weld: '', 
+    type_weld: '',
+    
+    welding_skill: 0,
+    UC: 0,
+    OV: 0,
+    PO: 0,
+    UFVi: 0,
+    root_visual: 0,
+
 });
 
 // calculate total score automatically
 const totalScore = computed(() => {
-    const welding = Number(form.welding_skill) || 0;
+    const welding = weldingScore.value || 0;
     const language = Number(form.language) || 0;
     const attitude = Number(form.attitude) || 0;
 
     return welding + language + attitude;
+});
+
+// calculate welding score automatically
+const weldingScore = computed(() => {
+    const uc = Number(form.UC) || 0;
+    const ov = Number(form.OV) || 0;
+    const po = Number(form.PO) || 0;
+    const ufvi = Number(form.UFVi) || 0;
+    const root_visual = Number(form.root_visual) || 0;
+
+    return uc + ov + po + ufvi + root_visual;
 });
 
 const submit = () => {
