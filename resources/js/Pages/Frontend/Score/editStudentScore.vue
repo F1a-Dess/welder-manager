@@ -22,10 +22,27 @@
                         <div v-if="form.errors.date" class="text-red-500">{{ form.errors.date }}</div>
                     </div>
 
-                    <div class="mb-3">
+                    <!-- R1 Weldin Skill Score -->
+                    <!-- <div class="mb-3">
                         <label >Welding Skill Score</label>
-                        <input id="welding_skill" type="number" v-model="form.welding_skill" class="py-1 w-full">
+                        <input type="number" v-model="form.welding_skill" class="py-1 w-full">
                         <div v-if="form.errors.welding_skill" class="text-red-500">{{ form.errors.welding_skill }}</div>
+                    </div> -->
+
+                    <!-- R2 Welding Skill Score, adding daily score and calculation -->
+                    <div class="mb-3">
+                        <div class="mb-1">
+                            <label>Welding Score : U/C || OV || PO || U/F/Vi || Root Visual</label>
+                        </div>
+                        <input type="number" v-model="form.UC" class="py-1 m-2 w-20">
+                        <input type="number" v-model="form.OV" class="py-1 m-2 w-20">
+                        <input type="number" v-model="form.PO" class="py-1 m-2 w-20">
+                        <input type="number" v-model="form.UFVi" class="py-1 m-2 w-20">
+                        <input type="number" v-model="form.root_visual" class="py-1 m-2 mb-3 w-20">
+
+                        <label >Total Welding Skill Score</label>
+                        <input type="hidden" v-model="form.welding_skill">
+                        <div>{{ weldingScore }}</div>
                     </div>
 
                     <div class="mb-3">
@@ -118,12 +135,28 @@ const form = useForm({
     student_id: props.student.id, // Automatically set to the current student's ID
     date: props.score.date,
 
-    welding_skill: props.score.welding_skill,
     language: props.score.language,
     attitude: props.score.attitude,
     total_score: props.score.total_score, // should be automaticly shown the result
     grade: props.score.grade,
-    type_weld: props.score.grade, 
+    type_weld: props.score.type_weld, 
+    
+    welding_skill: props.score.welding_skill,
+    UC: props.score.UC,
+    OV: props.score.OV,
+    PO: props.score.PO,
+    UFVi: props.score.UFVi,
+    root_visual: props.score.root_visual,
+});
+
+const weldingScore = computed(() => {
+    const uc = Number(form.UC) || 0;
+    const ov = Number(form.OV) || 0;
+    const po = Number(form.PO) || 0;
+    const ufvi = Number(form.UFVi) || 0;
+    const root_visual = Number(form.root_visual) || 0;
+
+    return uc + ov + po + ufvi + root_visual;
 });
 
 // calculate total score automatically

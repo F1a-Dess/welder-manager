@@ -14,31 +14,31 @@
             <div class="flex justify-between">
                 <h3>Show Student</h3>
                 <Link :href="route('students.index')" class="bg-red-500 text-white py-2 px-5 rounded mb-4 inline-block">Back</Link>
-                <Link :href="route('students.create-score', {student: student.id})" class="bg-blue-500 text-white p-3 rounded mb-4">Add New Data</Link>
+                <Link :href="route('students.create-score', {student: props.student.id})" class="bg-blue-500 text-white p-3 rounded mb-4">Add New Data</Link>
             </div>
 
-            <div class="grid grid-cols-12 gap-4">
+            <div v-if="props.student" class="grid grid-cols-12 gap-4">
                 <div class="col-span-6">
                     
                     <!-- Student name  -->
                     <div class="mb-3">
                         <label >Student Name</label>
                         <p>
-                            {{ student.name }}
+                            {{ props.student.name }}
                         </p>
                     </div>
                     <!-- Batch Optional -->
                     <div class="mb-3">
                         <label >Batch</label>
                         <p>
-                            {{ student.wave }}
+                            {{ props.student.wave }}
                         </p>
                     </div>
                     <!-- Test Number -->
                     <div class="mb-3">
                         <label >Test Number</label>
                         <p>
-                            {{ student.no_test }}
+                            {{ props.student.no_test }}
                         </p>
                     </div>
 
@@ -130,7 +130,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr v-if="student.scores && student.scores.length" v-for="(score, index) in sortedScores" :key="score.id">
+                                <tr v-if="props.student.scores && props.student.scores.length" v-for="(score, index) in sortedScores" :key="score.id">
                                     <td class="mb-3 text-center">{{ index + 1 }}</td>
                                     <td class="mb-3 text-center">{{ score.date }}</td>
                                     <td class="mb-3 text-center">{{ score.welding_skill }}</td>
@@ -141,12 +141,12 @@
                                     <td class="mb-3 text-center">{{ score.type_weld }}</td>
                                     <td>
                                         <Link 
-                                            :href="route('student-scores.edit', { student : student.id, student_score : score.id})" 
+                                            :href="route('student-scores.edit', { student : props.student.id, student_score : score.id})" 
                                             class="px-4 oy-1 text-sm bg-green-400 text-dark me-2 rounded inline-block">
                                             Edit
                                         </Link>
                                         <button
-                                            @click="deleteScore(score.id)" 
+                                            @click="deleteScore(score.id, props.student.id)" 
                                             class="px-4 oy-1 text-sm bg-red-500 text-dark me-2 rounded inline-block">
                                             Delete
                                         </button>
@@ -174,15 +174,21 @@ import { defineProps, ref, computed } from 'vue';
 
 const props = defineProps({
     student: Object,
-    score: Object
+    score: Object,
 });
 
 const deleteScore = (scoreId) => {
-  if (confirm('Are you sure you want to delete this score?')) {
-    router.delete(route('student-scores.destroy', scoreId), {
-      preserveScroll: true,
-      preserveState: true,
-    });
+    if (confirm('Are you sure you want to delete this score?')) {
+        router.delete(route('student-scores.destroy', scoreId), {
+            preserveScroll: true,
+            preserveState: true,
+            onSuccess: () => {
+                location.reload();
+            },
+            onError: () => {
+                alert('Failed to delete score.');
+            },
+        });
   }
 };
 
@@ -192,33 +198,33 @@ const sortOrder = ref('asc'); // Default order: ascending
 
 // Computed property to sort scores dynamically
 const sortedScores = computed(() => {
-  if (!props.student || !props.student.scores) return [];
+    if (!props.student || !props.student.scores) return [];
 
-  return [...props.student.scores].sort((a, b) => {
-    let compareA = a[sortColumn.value];
-    let compareB = b[sortColumn.value];
+    return [...props.student.scores].sort((a, b) => {
+        let compareA = a[sortColumn.value];
+        let compareB = b[sortColumn.value];
 
-    // If the column is 'date', compare by date objects
-    if (sortColumn.value === 'date') {
-      compareA = new Date(compareA).getTime();
-      compareB = new Date(compareB).getTime();
-    }
+        // If the column is 'date', compare by date objects
+        if (sortColumn.value === 'date') {
+        compareA = new Date(compareA).getTime();
+        compareB = new Date(compareB).getTime();
+        }
 
-    // Sort ascending or descending
-    return sortOrder.value === 'asc' ? compareA - compareB : compareB - compareA;
-  });
+        // Sort ascending or descending
+        return sortOrder.value === 'asc' ? compareA - compareB : compareB - compareA;
+    });
 });
 
 // Method to toggle sorting order
 const toggleSort = (column) => {
-  if (sortColumn.value === column) {
-    // Toggle order if the same column is clicked again
-    sortOrder.value = sortOrder.value === 'asc' ? 'desc' : 'asc';
-  } else {
-    // Change to the new column with default ascending order
-    sortColumn.value = column;
-    sortOrder.value = 'asc';
-  }
+    if (sortColumn.value === column) {
+        // Toggle order if the same column is clicked again
+        sortOrder.value = sortOrder.value === 'asc' ? 'desc' : 'asc';
+    } else {
+        // Change to the new column with default ascending order
+        sortColumn.value = column;
+        sortOrder.value = 'asc';
+    }
 };
 
 

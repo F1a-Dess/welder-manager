@@ -11,11 +11,12 @@ use Inertia\Inertia;
 class StudentScoreController extends Controller
 {
 
-    public function index()
+    public function index(Student $student)
     {
         $student_scores = StudentScore::paginate(10);
         return Inertia::render("Frontend/Student/showStudent",[
-            "score"=> $student_scores
+            "score"=> $student_scores,
+            "student" => $student->load('scores')
         ]);
     }
 
@@ -143,11 +144,13 @@ class StudentScoreController extends Controller
         return redirect()->route('student-scores.index', $student_score->student_id)->with('message', 'Score updated successfully!');
     }
 
-    public function destroy(StudentScore $studentScore)
-    {
-        $studentScore->delete();
+    public function destroy(StudentScore $student_score)
+    {        
+        $student_score->delete();
 
-        return redirect()->route('student-scores.index', $studentScore->student_id)->with('message', 'Score deleted successfully!');
+        // return redirect()->route('student-scores.index', $student_score->student_id)->with('message', 'Score deleted successfully!');
+        // return response()->json(['message' => 'Score deleted successfully!']);
+        return redirect()->back()->with('message', 'Score deleted successfully!');
     }
     
     public function boot(Student $student): void
