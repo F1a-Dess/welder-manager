@@ -97,30 +97,56 @@
                 <!-- Data Range Modal -->
                 <div v-if="showModal" class="modal-overlay">
                     <div class="modal-content">
-                        <h2>Select Date Range</h2>
+                        <h2>Export Student Data</h2>
 
-                        <label for="startDate">Start Date:</label>
-                        <input 
-                            type="date" 
-                            id="startDate"
-                            v-model="startDate"
-                            :min="minDate"
-                            :max="today"
-                            class="py-1 w-full"
-                            required
+                        <label>
+                            <input type="radio" v-model="reportType" value="weekly" />
+                            Export Weekly Report  
+                        </label>
+                        <label>
+                            <input type="radio" v-model="reportType" value="daily" />
+                            Export Daily Report  
+                        </label>
+                        
+                        <!-- weekly report -->
+                        <div v-if="reportType === 'weekly'">
+                            <label for="startDate">Start Date:</label>
+                            <input 
+                                type="date" 
+                                id="startDate"
+                                v-model="startDate"
+                                :min="minDate"
+                                :max="today"
+                                class="py-1 w-full"
+                                required
                             />
-                            
+                                
                             <label for="endDate">End Date:</label>
                             <input 
-                            type="date"
-                            id="endDate"
-                            v-model="endDate"
-                            :min="startDate || minDate"
-                            :max="today"
-                            class="py-1 w-full"    
-                            required
-                        />
-                        
+                                type="date"
+                                id="endDate"
+                                v-model="endDate"
+                                :min="startDate || minDate"
+                                :max="today"
+                                class="py-1 w-full"    
+                                required
+                            />
+                        </div>
+
+                        <!-- daily report -->
+                        <div v-if="reportType === 'daily'">
+                            <label for="selectedDate">Select Date:</label>
+                            <input 
+                                type="date" 
+                                id="selectedDate"
+                                v-model="selectedDate"
+                                :min="minDate"
+                                :max="today"
+                                class="py-1 w-full"
+                                required
+                            />
+                        </div>
+
                         <button 
                             @click="exportSelectedStudents"
                             class="mt-4 px-4 py-2 mr-4 bg-green-500 text-white rounded"
@@ -171,6 +197,9 @@ const selectedStudents = ref([]);
 const showModal = ref(false);
 const startDate = ref('');
 const endDate = ref('');
+const selectedDate = ref('');
+const reportType = ref('weekly'); // Default to weekly report
+let routeName;
 
 // sorting stuff
 
@@ -224,32 +253,52 @@ const closeModal = () => {
 
 const exportSelectedStudents = async () => {
     
+    const payload = {
+        selectedStudents: selectedStudents.value,
+        reportType: reportType.value,
+    };
+
+    // let routeName;
+
+    if(reportType.value === 'weekly') {
+        payload.startDate = startDate.value;
+        payload.endDate = endDate.value;
+        routeName = 'students-scores.export-weekly'
+    } else if (reportType.value === 'daily'){
+        payload.selectedDate = selectedDate.value;
+        routeName = 'students-scores.export-daily'
+    }
+
     try {
         
-        const response = await fetch(route('students-scores.export'), {
+        // const routeName = reportType.value === 'weekly'
+        //     ? 'students-scores.export-weekly'
+        //     : 'students-scores.export-daily';
+    
+        // const response = await fetch(route('students-scores.export'), {
+        const response = await fetch(route(routeName), {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
             },
-            body: JSON.stringify({
-                selectedStudents: selectedStudents.value,
-                startDate: startDate.value,
-                endDate: endDate.value,
-            }),
+            body: JSON.stringify(payload),
         });
 
         if (!response.ok) {
-            throw new Error(`Error: ${response.statusText}`);
+            const errorData = await response.json();
+            throw new Error(errorData.massage || `Error: ${response.statusText}`);
         }
 
         const blob = await response.blob();
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = 'WEEKLY REPORT ASSESSMENT ', endDate.value , '.xlsx';
+        // a.download = 'WEEKLY REPORT ASSESSMENT ', endDate.value , '.xlsx';
+        a.download = `${reportType.value.toUpperCase()} REPORT ASSESSMENT ${reportType.value === 'daily' ? selectedDate.value : endDate.value}.xlsx`;
         document.body.appendChild(a);
         a.click();
+        window.URL.revokeObjectURL(url);
         a.remove();
     } catch (error) {
         console.error('Export failed:', error);
