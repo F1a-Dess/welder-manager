@@ -1,0 +1,1 @@
+import{_ as a}from"./FrontendLayout-DrHqIwa6.js";import{o as t,f as o,a as n,w as r,F as s,b as e}from"./app-Dk-Q8yL7.js";const l=e("head",{title:"Welder Score Management"}," Welder Score Management ",-1),_=e("div",null,[e("h1",null,"HomePage")],-1),f={__name:"Home",setup(c){return(m,d)=>(t(),o(s,null,[l,n(a,null,{default:r(()=>[_]),_:1})],64))}};export{f as default};
