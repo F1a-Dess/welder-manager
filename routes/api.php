@@ -24,6 +24,8 @@ Route::post('students/{student}/scores', [StudentScoreController::class, 'store'
 // Route::post('/export-students-scores', [StudentDataExportController::class, 'export'])->name('students-scores.export');
 Route::post('/export-students-scores/export-daily', [StudentDataExportController::class, 'exportDaily'])->name('students-scores.export-daily');
 Route::post('/export-students-scores/export-weekly', [StudentDataExportController::class, 'exportWeekly'])->name('students-scores.export-weekly');
+Route::post('/export-students-scores/export-language', [StudentDataExportController::class, 'exportLanguage'])->name('students-scores.export-language');
+Route::post('/export-students-scores/export-attitude', [StudentDataExportController::class, 'exportAttitude'])->name('students-scores.export-attitude');
 
 
 Route::get('/user', function (Request $request) {

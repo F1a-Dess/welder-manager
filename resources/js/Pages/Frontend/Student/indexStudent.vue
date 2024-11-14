@@ -97,19 +97,40 @@
                 <!-- Data Range Modal -->
                 <div v-if="showModal" class="modal-overlay">
                     <div class="modal-content">
-                        <h2>Export Student Data</h2>
+                        <h2>Export Selected Student Data</h2>
 
                         <label>
                             <input type="radio" v-model="reportType" value="weekly" />
                             Export Weekly Report  
                         </label>
-                        <label>
-                            <input type="radio" v-model="reportType" value="daily" />
-                            Export Daily Report  
-                        </label>
+
+                        <div class="mt-4">
+                            <label>Daily Export Options :</label>
+                        </div>
+
+                        <div>
+                            <label>
+                                <input type="radio" v-model="reportType" value="dailyWelding" />
+                                Export Daily Welding Report  
+                            </label>
+                        </div>
+
+                        <div>
+                            <label>
+                                <input type="radio" v-model="reportType" value="dailyLanguage" />
+                                Export Daily Language Report  
+                            </label>
+                        </div>
+                        
+                        <div>
+                            <label>
+                                <input type="radio" v-model="reportType" value="dailyAttitude" />
+                                Export Daily Attitude Report  
+                            </label>
+                        </div>
                         
                         <!-- weekly report -->
-                        <div v-if="reportType === 'weekly'">
+                        <div class="mt-2" v-if="reportType === 'weekly'">
                             <label for="startDate">Start Date:</label>
                             <input 
                                 type="date" 
@@ -133,13 +154,41 @@
                             />
                         </div>
 
-                        <!-- daily report -->
-                        <div v-if="reportType === 'daily'">
-                            <label for="selectedDate">Select Date:</label>
+                        <!-- daily welding report options-->
+                        <div class="mt-2" v-if="reportType === 'dailyWelding'">
+                            <label for="selectedWeldingDate">Select Date:</label>
                             <input 
                                 type="date" 
-                                id="selectedDate"
-                                v-model="selectedDate"
+                                id="selectedWeldingDate"
+                                v-model="selectedWeldingDate"
+                                :min="minDate"
+                                :max="today"
+                                class="py-1 w-full"
+                                required
+                            />
+                        </div>
+
+                        <!-- daily language report options-->
+                        <div class="mt-2" v-if="reportType === 'dailyLanguage'">
+                            <label for="selectedLanguageDate">Select Date:</label>
+                            <input 
+                                type="date" 
+                                id="selectedLanguageDate"
+                                v-model="selectedLanguageDate"
+                                :min="minDate"
+                                :max="today"
+                                class="py-1 w-full"
+                                required
+                            />
+                        </div>
+
+                        <!-- daily attitude report options-->
+                        <div class="mt-2" v-if="reportType === 'dailyAttitude'">
+                            <label for="selectedAttitudeDate">Select Date:</label>
+                            <input 
+                                type="date" 
+                                id="selectedAttitudeDate"
+                                v-model="selectedAttitudeDate"
                                 :min="minDate"
                                 :max="today"
                                 class="py-1 w-full"
@@ -199,7 +248,6 @@ const startDate = ref('');
 const endDate = ref('');
 const selectedDate = ref('');
 const reportType = ref('weekly'); // Default to weekly report
-let routeName;
 
 // sorting stuff
 
@@ -238,7 +286,6 @@ const changeSort = (field) => {
     
 };
 
-
 const openDateRangeModal = () => {
     if(selectedStudents.value.length === 0) {
         alert('Please select at least one score to export.');
@@ -258,24 +305,37 @@ const exportSelectedStudents = async () => {
         reportType: reportType.value,
     };
 
-    // let routeName;
+    let routeName;
+    let selectedDate;
 
-    if(reportType.value === 'weekly') {
-        payload.startDate = startDate.value;
-        payload.endDate = endDate.value;
-        routeName = 'students-scores.export-weekly'
-    } else if (reportType.value === 'daily'){
-        payload.selectedDate = selectedDate.value;
-        routeName = 'students-scores.export-daily'
+    switch (reportType.value) {
+        case 'weekly':
+            payload.startDate = startDate.value;
+            payload.endDate = endDate.value;
+            selectedDate = endDate.value;
+            routeName = 'students-scores.export-weekly';
+            break;
+        case 'dailyWelding':
+            payload.selectedDate = selectedWeldingDate.value;
+            selectedDate = selectedWeldingDate.value;
+            routeName = 'students-scores.export-daily';
+            break;
+        case 'dailyLanguage':
+            payload.selectedDate = selectedLanguageDate.value;
+            selectedDate = selectedLanguageDate.value;
+            routeName = 'students-scores.export-language';
+            break;
+        case 'dailyAttitude':
+            payload.selectedDate = selectedAttitudeDate.value;
+            selectedDate = selectedAttitudeDate.value;
+            routeName = 'students-scores.export-attitude';
+            break;
+        default:
+            alert('Invalid report type selected.');
+            return;
     }
 
     try {
-        
-        // const routeName = reportType.value === 'weekly'
-        //     ? 'students-scores.export-weekly'
-        //     : 'students-scores.export-daily';
-    
-        // const response = await fetch(route('students-scores.export'), {
         const response = await fetch(route(routeName), {
             method: 'POST',
             headers: {
@@ -287,15 +347,26 @@ const exportSelectedStudents = async () => {
 
         if (!response.ok) {
             const errorData = await response.json();
-            throw new Error(errorData.massage || `Error: ${response.statusText}`);
+            throw new Error(errorData.message || `Error: ${response.statusText}`);
         }
 
         const blob = await response.blob();
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        // a.download = 'WEEKLY REPORT ASSESSMENT ', endDate.value , '.xlsx';
-        a.download = `${reportType.value.toUpperCase()} REPORT ASSESSMENT ${reportType.value === 'daily' ? selectedDate.value : endDate.value}.xlsx`;
+
+        // Custom formatted download filename 
+        const reportTypeName = {
+            dailyWelding: 'Daily Welding Assesment Report',
+            dailyLanguage: 'Daily Language Assesment Report',
+            dailyAttitude: 'Daily Attitude Assesment Report',
+            weekly: 'Weekly Assesment Report',
+        };
+        
+        const dateString = selectedDate && typeof selectedDate === 'object' ? selectedDate.value : selectedDate;
+        const fileName = `${reportTypeName[reportType.value]} ${dateString}.xlsx`;
+        a.download = fileName;
+
         document.body.appendChild(a);
         a.click();
         window.URL.revokeObjectURL(url);

@@ -14,17 +14,15 @@ use PhpOffice\PhpSpreadsheet\Style\Fill;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 use Carbon\Carbon;
 
-class DailyStudentsExport implements FromCollection, WithHeadings, WithTitle, WithStyles
+class DailyLanguageExport implements FromCollection, WithHeadings, WithTitle, WithStyles
 {
     protected $students;
     protected $selectedDate;
-    protected $typeWeldFilter;
 
     public function __construct($students, $selectedDate, $typeWeldFilter = [])
     {
         $this->students = $students;
         $this->selectedDate = $selectedDate;
-        $this->typeWeldFilter = $typeWeldFilter;
     }
 
     public function collection()
@@ -35,26 +33,21 @@ class DailyStudentsExport implements FromCollection, WithHeadings, WithTitle, Wi
             // Get scores for the selected date
             $scores = $student->scores->where('date', $this->selectedDate);
 
-            // Filter by selected type_weld if a filter is provided
-            if (!empty($this->typeWeldFilter)) {
-                $scores = $scores->whereIn('type_weld', $this->typeWeldFilter);
-            }
-
             foreach ($scores as $score) {
                 $rowIndex = count($exportData) + 3; // Adjust for Excel row (start from 3 due to headers)
-                $totalFormula = "=SUM(D{$rowIndex}:H{$rowIndex})";
+                $totalFormula = "=SUM(D{$rowIndex}:I{$rowIndex})";
 
                 $exportData[] = [
                     'No' => $index + 1,
                     'No Test' => $student->no_test,
                     'Name' => $student->name,
-                    'U/C' => $score->UC,
-                    'OV' => $score->OV,
-                    'PO' => $score->PO,
-                    'U/F Vi' => $score->UFVi,
-                    'Root Visual' => $score->root_visual,
+                    'Class Prep' => $score->class_prep,
+                    'Understanding' => $score->understanding,
+                    'Conversation' => $score->conversation,
+                    'Vocabulary' => $score->vocabulary,
+                    'Weekly' => $score->weekly,
+                    'Korean Song' => $score->k_song,
                     'Total' => $totalFormula, // Excel formula for the Total column
-                    'Weld Type' => $score->type_weld,
                 ];
             }
         }
@@ -66,8 +59,13 @@ class DailyStudentsExport implements FromCollection, WithHeadings, WithTitle, Wi
     public function headings(): array
     {
         return [
-            ['Daily Welding Report for ' . Carbon::parse($this->selectedDate)->format('Y-m-d')],
-            ['No', 'No Test', 'Name', 'U/C', 'OV', 'PO', 'U/F Vi', 'Root Visual', 'Total', 'Weld Type'],
+            ['Daily Language Report for ' . Carbon::parse($this->selectedDate)->format('Y-m-d')],
+            [
+                'No', 'No Test', 'Name',
+                'Class Preparation', 'Understanding', 'Conversation', 
+                'Vocabulary', 'Weekly', 'Korean Song', 
+                'Total',
+            ],
         ];
     }
 

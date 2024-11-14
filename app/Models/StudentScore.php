@@ -15,10 +15,23 @@ class StudentScore extends Model
         "id",
         "student_id",
         "date",
-        
-        // weekly
-        "language",
-        "attitude",
+
+        // language detail
+        "language", // summary of all data below
+        "class_prep",
+        "understanding",
+        "conversation",
+        "vocabulary",
+        "weekly",
+        "k_song",
+
+        // attitude detail
+        "attitude", // summary of all data below
+        "rci",
+        "opa",
+        "ncd",
+
+        // summary
         "total_score",
         "grade",
         "type_weld",

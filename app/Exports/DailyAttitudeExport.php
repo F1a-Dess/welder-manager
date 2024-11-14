@@ -14,7 +14,7 @@ use PhpOffice\PhpSpreadsheet\Style\Fill;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 use Carbon\Carbon;
 
-class DailyStudentsExport implements FromCollection, WithHeadings, WithTitle, WithStyles
+class DailyAttitudeExport implements FromCollection, WithHeadings, WithTitle, WithStyles
 {
     protected $students;
     protected $selectedDate;
@@ -35,26 +35,19 @@ class DailyStudentsExport implements FromCollection, WithHeadings, WithTitle, Wi
             // Get scores for the selected date
             $scores = $student->scores->where('date', $this->selectedDate);
 
-            // Filter by selected type_weld if a filter is provided
-            if (!empty($this->typeWeldFilter)) {
-                $scores = $scores->whereIn('type_weld', $this->typeWeldFilter);
-            }
 
             foreach ($scores as $score) {
                 $rowIndex = count($exportData) + 3; // Adjust for Excel row (start from 3 due to headers)
-                $totalFormula = "=SUM(D{$rowIndex}:H{$rowIndex})";
+                $totalFormula = "=SUM(D{$rowIndex}:F{$rowIndex})";
 
                 $exportData[] = [
                     'No' => $index + 1,
                     'No Test' => $student->no_test,
                     'Name' => $student->name,
-                    'U/C' => $score->UC,
-                    'OV' => $score->OV,
-                    'PO' => $score->PO,
-                    'U/F Vi' => $score->UFVi,
-                    'Root Visual' => $score->root_visual,
+                    'rci' => $score->rci,
+                    'opa' => $score->opa,
+                    'ncd' => $score->ncd,
                     'Total' => $totalFormula, // Excel formula for the Total column
-                    'Weld Type' => $score->type_weld,
                 ];
             }
         }
@@ -66,8 +59,8 @@ class DailyStudentsExport implements FromCollection, WithHeadings, WithTitle, Wi
     public function headings(): array
     {
         return [
-            ['Daily Welding Report for ' . Carbon::parse($this->selectedDate)->format('Y-m-d')],
-            ['No', 'No Test', 'Name', 'U/C', 'OV', 'PO', 'U/F Vi', 'Root Visual', 'Total', 'Weld Type'],
+            ['Daily Attitude Report for ' . Carbon::parse($this->selectedDate)->format('Y-m-d')],
+            ['No', 'No Test', 'Name', 'Responsibility', 'Obedience', 'Neatness', 'Total',],
         ];
     }
 
@@ -79,22 +72,22 @@ class DailyStudentsExport implements FromCollection, WithHeadings, WithTitle, Wi
     public function styles(Worksheet $sheet)
     {
         // Basic styling
-        $sheet->getStyle('A1:J1')->getFont()->setBold(true);
-        $sheet->getStyle('A2:J2')->getFont()->setBold(true);
+        $sheet->getStyle('A1:G1')->getFont()->setBold(true);
+        $sheet->getStyle('A2:G2')->getFont()->setBold(true);
 
         // Auto-size columns
-        foreach (range('A', 'J') as $col) {
+        foreach (range('A', 'G') as $col) {
             $sheet->getColumnDimension($col)->setAutoSize(true);
         }
 
         // Merge the title cell
-        $sheet->mergeCells('A1:J1');
+        $sheet->mergeCells('A1:G1');
 
         // Center-align the title
         $sheet->getStyle('A1')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
 
         // Align header columns
-        $sheet->getStyle('A2:J2')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+        $sheet->getStyle('A2:G2')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
 
         // Apply borders to the entire table
         $highestRow = $sheet->getHighestRow();
