@@ -21,7 +21,14 @@
             <table v-if="studentData.length" class="w-full bg-white border border-gray-200 shadow">
                 <thead>
                     <tr>
-                        <th class="py-2 px-4 text-left border">Option</th>
+                        <th class="py-2 px-4 text-left border">
+                            Option - Select All
+                            <input 
+                                type="checkbox"
+                                @change="toggleSelectAll($event)"
+                                :checked="areAllSelected"
+                            />
+                        </th>
                         <!-- <th class="py-2 px-4 text-left border">Id</th> -->
                         <th class="py-2 px-4 text-left border cursor-pointer" @click="changeSort('name')">
                             Nama
@@ -53,10 +60,25 @@
                         v-for="(item, index) in studentData"
                         :key="index"
                     >
+                        <!-- <td class="py-2 px-4 border">
+                            <input 
+                                type="checkbox" 
+                                :value="item.id"
+                                :checked="selectedStudents.includes(item.id)"
+                                @change="toggleStudentSelection(item)"
+                                v-model="selectedStudents"
+                            />
+                        </td> -->
+
                         <td class="py-2 px-4 border">
-                            <input type="checkbox" :value="item.id" v-model="selectedStudents" />
+                            <input 
+                                type="checkbox" 
+                                :value="item.id"
+                                :checked="selectedStudents.includes(item.id)"
+                                @change="toggleStudentSelection(item)"
+                            />
                         </td>
-                        <!-- <td class="py-2 px-4 border">{{item.id}}</td> -->
+
                         <td class="py-2 px-4 border">{{item.name}}</td>
                         <td class="py-2 px-4 border">{{item.wave}}</td>
                         <td class="py-2 px-4 border">{{item.no_test}}</td>
@@ -214,6 +236,7 @@
             <div class="float-end">
                 <Pagination class="mt-4" :links="students.links"></Pagination>
             </div>
+            
         </div>
 
     </FrontendLayout>
@@ -224,7 +247,7 @@
 import FrontendLayout from '@/Layouts/FrontendLayout.vue';
 import { Head, useForm, Link } from '@inertiajs/vue3';
 import Pagination from '@/Components/Pagination.vue';
-import { computed, defineProps, ref, watch } from 'vue';
+import { computed, defineProps, ref } from 'vue';
 
 const props = defineProps ({
     students: [Object, Array],
@@ -238,6 +261,38 @@ const deleteStudent = (studentId) => {
         form.delete(route('students.destroy', studentId));
     }
 };
+
+// Toggle Student Selection so it wont reset when changing page
+
+const toggleStudentSelection = (item) => {
+    const index = selectedStudents.value.indexOf(item.id);
+    if (index > -1) {
+        // if the student is already selected, remove it from the array
+        selectedStudents.value.splice(index, 1);
+    } else {
+        // if the student is not already selected, add it to the array
+        selectedStudents.value.push(item.id);
+    }
+};
+
+const toggleSelectAll = (event) => {
+    const currentPageIds = studentData.value.map((student) => student.id);
+
+    if (event.target.checked) {
+        currentPageIds.forEach((id) => {
+            if (!selectedStudents.value.includes(id)) {
+                selectedStudents.value.push(id);
+            }
+        });
+    } else {
+        selectedStudents.value = selectedStudents.value.filter(id => !currentPageIds.includes(id));
+    }
+};
+
+const areAllSelected = computed(() => {
+    const currentPageIds = studentData.value.map((student) => student.id);
+    return currentPageIds.length > 0 && currentPageIds.every((id) => selectedStudents.value.includes(id));
+});
 
 
 // Range modal stuff
@@ -265,7 +320,8 @@ const minDate = computed(() => {
 const studentData = computed(() => {
     const data = Array.isArray(props.students) ? props.students : props.students.data || [];
 
-    return [...data].sort((a, b) => {
+    // return [...data].sort((a, b) => {
+    return Array.isArray(data) ? [...data].sort((a, b) => {
         if (!sortField.value) return 0;
         const fieldA = a[sortField.value];
         const fieldB = b[sortField.value];
@@ -273,7 +329,7 @@ const studentData = computed(() => {
         if (fieldA < fieldB) return sortOrder.value === 'asc' ? -1 : 1;
         if (fieldA > fieldB) return sortOrder.value === 'asc' ? 1 : -1;
         return 0;
-    });
+    }) : [];
 });
 
 const changeSort = (field) => {

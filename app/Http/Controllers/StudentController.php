@@ -14,7 +14,7 @@ class StudentController extends Controller
      */
     public function index()
     {
-        $students = Student::paginate(10);
+        $students = Student::paginate(50);
         return Inertia::render("Frontend/Student/indexStudent",[
             "students"=> $students
         ]);
