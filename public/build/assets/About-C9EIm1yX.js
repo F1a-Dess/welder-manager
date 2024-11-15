@@ -1,1 +1,0 @@
-import{o as a,f as n,b as t,t as l,F as s}from"./app-Dk-Q8yL7.js";const u={__name:"About",props:{title:String},setup(e){return(i,r)=>(a(),n(s,null,[t("head",null,[t("title",null,l(e.title)+"'s page",1)]),t("div",null,[t("h1",null,"This is "+l(e.title),1)])],64))}};export{u as default};
