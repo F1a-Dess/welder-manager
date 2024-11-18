@@ -45,52 +45,87 @@
                     -->
 
                     <!-- R2 Complex Skill Score -->
-                    <div class="mb-3">
+                    <div class="mb-5">
                         <div class="mb-1">
-                            <label>Welding Score : U/C || OV || PO || U/F/Vi || Root Visual</label>
+                            <label>Welding Score : {{ weldingScore }}</label>
                         </div>
-                        <input type="number" v-model="form.UC" class="py-1 m-2 w-20">
-                        <input type="number" v-model="form.OV" class="py-1 m-2 w-20">
-                        <input type="number" v-model="form.PO" class="py-1 m-2 w-20">
-                        <input type="number" v-model="form.UFVi" class="py-1 m-2 w-20">
-                        <input type="number" v-model="form.root_visual" class="py-1 m-2 mb-3 w-20">
 
-                        <label >Total Welding Skill Score</label>
+                        <table class="table-auto border-collapse norder divide-gray-300">
+                            <thead>
+                                <tr>
+                                    <th>U/C</th>
+                                    <th>OV</th>
+                                    <th>PO</th>
+                                    <th>U/F/Vi</th>
+                                    <th>Root Visual</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="mb-3 text-center"><input type="number" v-model="form.UC" class="py-0.5 mr-1 ml-1" style="width: 120px;"></td>
+                                    <td class="mb-3 text-center"><input type="number" v-model="form.OV" class="py-0.5 mr-1 ml-1" style="width: 120px;"></td>
+                                    <td class="mb-3 text-center"><input type="number" v-model="form.PO" class="py-0.5 mr-1 ml-1" style="width: 120px;"></td>
+                                    <td class="mb-3 text-center"><input type="number" v-model="form.UFVi" class="py-0.5 mr-1 ml-1" style="width: 120px;"></td>
+                                    <td class="mb-3 text-center"><input type="number" v-model="form.root_visual" class="py-0.5 mr-1 ml-1" style="width: 120px;"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        
                         <input type="hidden" v-model="form.welding_skill">
-                        <div>{{ weldingScore }}</div>
                     </div>
 
-                    <div class="mb-3">
+                    <div class="mb-5">
                         <div class="mb-1">
-                            <label>Lanugage Score : 수업준비 || 정도이해 || 회화테스트 || 일 단어시험 || 주간시험 || 한국노래</label>
+                            <label>Lanugage Score : {{ languageScore }}</label>
                         </div>
-                        <input type="number" v-model="form.class_prep" class="py-1 m-2 w-20">
-                        <input type="number" v-model="form.understanding" class="py-1 m-2 w-20">
-                        <input type="number" v-model="form.conversation" class="py-1 m-2 w-20">
-                        <input type="number" v-model="form.vocabulary" class="py-1 m-2 w-20">
-                        <input type="number" v-model="form.weekly" class="py-1 m-2 mb-3 w-20">
-                        <input type="number" v-model="form.k_song" class="py-1 m-2 mb-3 w-20">
 
-                        <div class="mb-1">
-                            <label >Total Language Score</label>
-                        </div>
+                        <table class="table-auto border-collapse norder divide-gray-300">
+                            <thead>
+                                <tr style="width: 450px;">
+                                    <th>Preparation</th>
+                                    <th>Understanding</th>
+                                    <th>Conversation</th>
+                                    <th>Vocabulary</th>
+                                    <th>Daily</th>
+                                    <th>Korean Songs</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <td class="mb-3 text-center"><input type="number" v-model="form.class_prep" class="py-0.5 mr-1 ml-1" style="width: 120px;"></td>
+                                <td class="mb-3 text-center"><input type="number" v-model="form.understanding" class="py-0.5 mr-1 ml-1" style="width: 120px;"></td>
+                                <td class="mb-3 text-center"><input type="number" v-model="form.conversation" class="py-0.5 mr-1 ml-1" style="width: 120px;"></td>
+                                <td class="mb-3 text-center"><input type="number" v-model="form.vocabulary" class="py-0.5 mr-1 ml-1" style="width: 120px;"></td>
+                                <td class="mb-3 text-center"><input type="number" v-model="form.weekly" class="py-0.5 mr-1 ml-1" style="width: 120px;"></td>
+                                <td class="mb-3 text-center"><input type="number" v-model="form.k_song" class="py-0.5 mr-1 ml-1" style="width: 120px;"></td>
+                            </tbody>
+                        </table>
+
                         <input type="hidden" v-model="form.language">
-                        <div>{{ languageScore }}</div>
                     </div>
 
-                    <div class="mb-3">
+                    <div class="mb-5">
                         <div class="mb-1">
-                            <label>Attitude Score : Responsibility || Obidience || Neatness</label>
+                            <label>Attitude Score : {{ attitudeScore }}</label>
                         </div>
-                        <input type="number" v-model="form.rci" class="py-1 m-2 w-20">
-                        <input type="number" v-model="form.opa" class="py-1 m-2 w-20">
-                        <input type="number" v-model="form.ncd" class="py-1 m-2 w-20">
 
-                        <div class="mb-1">
-                            <label >Total Attitude Score</label>
-                        </div>
+                        <table class="table-auto border-collapse norder divide-gray-300">
+                            <thead>
+                                <tr>
+                                    <th>Responsibility</th>
+                                    <th>Obidience</th>
+                                    <th>Neatness</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="mb-3 text-center"><input type="number" v-model="form.rci" class="py-0.5 mr-1 ml-1" style="width: 120px;"></td>
+                                    <td class="mb-3 text-center"><input type="number" v-model="form.opa" class="py-0.5 mr-1 ml-1" style="width: 120px;"></td>
+                                    <td class="mb-3 text-center"><input type="number" v-model="form.ncd" class="py-0.5 mr-1 ml-1" style="width: 120px;"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+
                         <input type="hidden" v-model="form.attitude">
-                        <div>{{ attitudeScore }}</div>
                     </div>
 
                     
@@ -108,19 +143,21 @@
                     <div class="mb-3">
                         <label >Grade</label>
                         <div><label>A: > 75; B: > 60; C: > 50; D: < 50 </label></div>
-                        <input type="text" maxlength="1" v-model="form.grade" class="py-1 w-full">
+                        <input type="text" maxlength="1" v-model="form.grade" class="py-1 w-30">
                         <div v-if="form.errors.attitude" class="text-red-500">{{ form.errors.grade }}</div>
                     </div>
 
                     <div class="mb-3">
                         <label >Type Welding</label>
-                        <select v-model="form.type_weld" class="py-1 w full">
-                            <option value="" disabled>Select Welding Type</option>
-                            <option value="3G 12T">3G 12T</option>
-                            <option value="3G 20T">3G 20T</option>
-                            <option value="4G 12T">4G 12T</option>
-                            <option value="4G 20T">4G 20T</option>
-                        </select>
+                        <div>
+                            <select v-model="form.type_weld" class="py-1 w-30">
+                                <option value="" disabled>Select Welding Type</option>
+                                <option value="3G 12T">3G 12T</option>
+                                <option value="3G 20T">3G 20T</option>
+                                <option value="4G 12T">4G 12T</option>
+                                <option value="4G 20T">4G 20T</option>
+                            </select>
+                        </div>
                         <div v-if="form.errors.type_weld" class="text-red-500">{{ form.errors.type_weld }}</div>
                     </div>
 
@@ -131,7 +168,7 @@
                     <div class="mb-3">
                         <Link 
                             :href="route('students.show', props.student.id)" 
-                            class="bg-red-600 text-white py-2 px-5 rounded mb-4 inline-block"
+                            class="bg-red-600 text-white py-2 m-2 px-5 rounded mb-4 inline-block"
                         >
                             Cancel
                         </Link>

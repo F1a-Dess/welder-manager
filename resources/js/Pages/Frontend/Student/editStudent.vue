@@ -13,7 +13,6 @@
         <div class="mt-4 mx-4">
             <div class="flex justify-between">
                 <h3>Edit Student</h3>
-                <Link :href="route('students.index')" class="bg-red-500 text-white py-2 px-5 rounded mb-4 inline-block">Back</Link>
             </div>
 
             <form @submit.prevent="updateStudent()">
@@ -42,14 +41,14 @@
                     <div class="mb-3">
                         <Link 
                             :href="route('students.index')" 
-                            class="bg-red-600 text-white py-2 px-5 rounded mb-4 inline-block"
+                            class="bg-red-600 text-white py-2 px-5 rounded mb-4 mr-2 ml-2 inline-block"
                         >
                             Back
                         </Link>
                         <button 
                             type="submit"
                             :disabled="form.processing"
-                            class="bg-blue-500 text-white py-2 px-5 rounded mb-4"
+                            class="bg-blue-500 text-white py-2 px-5 rounded mb-4 mr-2 ml-2"
                         >
                         <span v-if="form.processing">Updating...</span>
                         <span v-else>Update</span>

@@ -11,11 +11,7 @@
         </div>
 
         <div class="mt-4 mx-4">
-            <div class="flex justify-between">
-                <h3>Show Student</h3>
-                <Link :href="route('students.index')" class="bg-red-500 text-white py-2 px-5 rounded mb-4 inline-block">Back</Link>
-                <Link :href="route('students.create-score', {student: props.student.id})" class="bg-blue-500 text-white p-3 rounded mb-4">Add New Data</Link>
-            </div>
+            <h3>Show Student</h3>
 
             <div v-if="props.student" class="grid grid-cols-12 gap-4">
                 <div class="col-span-6">
@@ -40,6 +36,11 @@
                         <p>
                             {{ props.student.no_test }}
                         </p>
+                    </div>
+
+                    <div class="mt-10">
+                        <Link :href="route('students.index')" class="bg-red-500 text-white p-3 rounded mb-4 mr-2 ml-2">Back</Link>
+                        <Link :href="route('students.create-score', {student: props.student.id})" class="bg-blue-500 text-white p-3 rounded mb-4 mr-2 ml-2">Add New Data</Link>
                     </div>
 
                     <!-- Student Scores Table -->
