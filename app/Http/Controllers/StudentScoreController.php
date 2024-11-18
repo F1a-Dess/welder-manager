@@ -213,7 +213,10 @@ class StudentScoreController extends Controller
             'type_weld' => $request -> type_weld,
         ]);
 
-        return redirect()->route('student-scores.index', $student_score->student_id)->with('message', 'Score updated successfully!');
+        // return redirect()->route('student-scores.index', $student_score->student_id)->with('message', 'Score updated successfully!');
+        return redirect()->back()->with('message', 'Score updated successfully!');
+        // return redirect()->route('students.show', $student_score->id)->with('message', 'Score updated successfully');
+
     }
 
     public function destroy(StudentScore $student_score)

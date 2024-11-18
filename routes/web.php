@@ -16,11 +16,12 @@ Route::inertia('/contact', 'Frontend/Contact')->name('contact');
 Route::resource('students', StudentController::class);
 Route::resource('student-scores', StudentScoreController::class);
 
-Route::get('/student-scores/{student}', [StudentScoreController::class, 'index'])->name('student-scores.index');
+// Route::get('/student-scores/{student}', [StudentScoreController::class, 'index'])->name('student-scores.index');
+Route::get('/students/{student}', [StudentScoreController::class, 'index'])->name('student-scores.index');
 
 Route::get('/students/{id}', [StudentController::class, 'show'])->name('students.show');
 Route::get('students/{student}/create-score', [StudentScoreController::class, 'create'])->name('students.create-score');
-// Route::get('students/{student}/update-score', [StudentScoreController::class, 'edit'])->name('students.update-score');
+Route::get('students/{student}/update-score', [StudentScoreController::class, 'edit'])->name('students.update-score');
 
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
