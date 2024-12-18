@@ -135,7 +135,8 @@ return [
 
     'aliases' => Facade::defaultAliases()->merge( [
     
-    'Excel' => Maatwebsite\Excel\Facades\Excel::class,
+    // 'Excel' => Maatwebsite\Excel\Facades\Excel::class,
+    'Excel' => \Maatwebsite\Excel\Facades\Excel::class,
     ])->toArray(),
 
 ];
